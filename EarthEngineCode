@@ -1,0 +1,26 @@
+
+var collection = ee.ImageCollection('COPERNICUS/S5P/OFFL/L3_CH4')
+  .select('CH4_column_volume_mixing_ratio_dry_air')
+  .filterDate('2019-08-01', '2019-12-31');
+
+var band_viz = {
+  min: 1750,
+  max: 1900,
+  palette: ['black', 'blue', 'purple', 'cyan', 'green', 'yellow', 'red']
+};
+
+Map.addLayer(collection.mean(), band_viz, 'S5P CH4');
+Map.setCenter(0.0, 0.0, 2);
+
+var img=collection.mean()
+print('Collection without properties', img);
+var geometry = ee.Geometry.Rectangle([-148,84,-41,37]);
+
+
+
+Export.image.toDrive({
+  image: img,
+  description: '2019',
+  crs: 'EPSG:4326',
+  region: geometry
+});
